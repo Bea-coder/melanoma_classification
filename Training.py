@@ -15,10 +15,10 @@ from data_analysis import confusion_matrix,generating_indices
 import torch.optim as optim
 from torch.optim import lr_scheduler 
 #importing data
-max_files=575*2
+max_files=512*2
 print("Files to train {}".format(max_files))
 num_workers =0
-batch_size  =50
+batch_size  =64
 valid_size  =0.2
 n_epochs = 150
 num_train=max_files
@@ -42,7 +42,7 @@ file_list = pd.read_csv('/data/bea/Data/siim-isic-melanoma-classification/train.
 labels,filenames=generating_indices(file_list,0,max_files)
 
 
-params ={'batch_size': 50,
+params ={'batch_size': batch_size,
          'shuffle': False,
          'num_workers': 0}
 
