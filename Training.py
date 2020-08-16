@@ -15,7 +15,7 @@ from data_analysis import confusion_matrix,generating_indices
 import torch.optim as optim
 from torch.optim import lr_scheduler 
 #importing data
-max_files=250
+max_files=575*2
 print("Files to train {}".format(max_files))
 num_workers =0
 batch_size  =50
@@ -84,7 +84,7 @@ model.cuda(cuda1)
 #Loss and Optimizer
 #criterion = nn.CrossEntropyLoss(weight=class_weights)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(),lr=0.01)
+optimizer = optim.Adam(model.parameters(),lr=0.001)
 
 filename ='loss-celoss-adam-ben-lr-3'
 
