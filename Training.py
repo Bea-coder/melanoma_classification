@@ -18,13 +18,14 @@ from torch.optim import lr_scheduler
 max_files=512*2
 print("Files to train {}".format(max_files))
 num_workers =0
-batch_size  =64
+batch_size  =32
 valid_size  =0.2
 n_epochs = 150
 num_train=max_files
 resolution=512
 load_model=True
-
+keep_loss_file=True #initialize start=last epoch
+start=30
 transform=transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
@@ -63,9 +64,12 @@ validation_generator =DataLoader(validation_set,**params)
 
 #create a complete CNN
 modelA =NetBodyParts(resolution)
+n=0;
 for param in modelA.parameters():
-	param.requires_grad = False
-
+    print(n,len(param))
+    if n<6 :
+        param.requires_grad = False
+    n+=1
 modelA.load_state_dict(torch.load('model-BP.pt'))
 
 print(modelA)
@@ -84,20 +88,20 @@ model.cuda(cuda1)
 #Loss and Optimizer
 #criterion = nn.CrossEntropyLoss(weight=class_weights)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(),lr=0.001)
+optimizer = optim.Adam(model.parameters(),lr=0.01)
 
-filename ='loss-celoss-adam-ben-lr-3'
+filename ='loss-celoss-adam-ben-lr-2'
 
 
 #training
 valid_loss_min =np.Inf
-
-with open(filename+'.dat',"w") as f:
+if keep_loss_file == False :
+   with open(filename+'.dat',"w") as f:
         line="#train loss\tvalid_loss\n"
         f.write(line)
-
+   start=0
 #scheduler=lr_scheduler.MultiStepLR(optimizer, milestones=[10,20,40], gamma=0.1)
-for epoc in range(1,n_epochs+1):
+for epoc in range(start,n_epochs+1):
     train_loss=0.0
     valid_loss=0.0
     accuracy = 0.0
@@ -136,7 +140,7 @@ for epoc in range(1,n_epochs+1):
 #            print("prediction: ".format(top_class.view(*local_labels.shape)))
 #            print("values    : ".format(local_labels))
             confusion_matrix(top_class,local_labels,equals,len(dict_categories),cuda1)
-            print(torch.sum(equals))
+#            print(torch.sum(equals))
     train_loss= train_loss/(len(training_generator))
     valid_loss= valid_loss/(len(validation_generator))
     accuracy= accuracy/(len(validation_generator))
