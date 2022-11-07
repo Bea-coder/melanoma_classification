@@ -4,10 +4,10 @@ import pandas as pd
 from torchvision import transforms
 from torch.utils.data import DataLoader
 import torch.nn as nn
-from  import confusion_matrix,generating_indices
+from Imageimport confusion_matrix,generating_indices
 import torch.optim as optim
 
-from melanoma_v1.model.ImageDataset import ImageDataset
+from model.ImageDataset import ImageDataset
 from Network import NetBodyParts, NetMelanoma
 
 
